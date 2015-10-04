@@ -750,19 +750,19 @@ public class MimeUtility {
 	int start = 2; int pos; 
 	if ((pos = eword.indexOf('?', start)) == -1)
 	    throw new ParseException();
-	String charset = javaCharset(eword.substring(start, pos));
+	String word = eword.substring(start, pos);
+	String charset = javaCharset(word);
 
 	// get encoding
 	start = pos+1;
 	if ((pos = eword.indexOf('?', start)) == -1)
 	    throw new ParseException();
-	String encoding = eword.substring(start, pos);
+	String encoding = word;
 
 	// get encoded-sequence
 	start = pos+1;
 	if ((pos = eword.indexOf("?=", start)) == -1)
 	    throw new ParseException();
-	String word = eword.substring(start, pos);
 
 	try {
 	    // Extract the bytes from word
@@ -829,7 +829,7 @@ public class MimeUtility {
 	int start = 0, i;
 	StringBuffer buf = new StringBuffer();
 	while ((i = word.indexOf("=?", start)) >= 0) {
-	    buf.append(word.substring(start, i));
+	    buf.append(word, start, i);
 	    int end = word.indexOf("?=", i);
 	    if (end < 0)
 		break;
@@ -845,7 +845,7 @@ public class MimeUtility {
 	if (start == 0)
 	    return word;
 	if (start < word.length())
-	    buf.append(word.substring(start));
+	    buf.append(word, start, word.length());
 	return buf.toString();
     }
 
@@ -879,7 +879,7 @@ public class MimeUtility {
 		// need to escape them and then quote the whole string
 		StringBuffer sb = new StringBuffer(len + 3);
 		sb.append('"');
-		sb.append(word.substring(0, i));
+		sb.append(word, 0, i);
 		int lastc = 0;
 		for (int j = i; j < len; j++) {
 		    char cc = word.charAt(j);
@@ -962,7 +962,7 @@ public class MimeUtility {
 		used = 0;
 		break;
 	    }
-	    sb.append(s.substring(0, lastspace));
+	    sb.append(s, 0, lastspace);
 	    sb.append("\r\n");
 	    lastc = s.charAt(lastspace);
 	    sb.append(lastc);
@@ -1003,7 +1003,7 @@ public class MimeUtility {
 		    if (sb == null)
 			sb = new StringBuffer(s.length());
 		    if (start != 0) {
-			sb.append(s.substring(0, start));
+			sb.append(s, 0, start);
 			sb.append(' ');
 		    }
 		    s = s.substring(i);
@@ -1012,15 +1012,15 @@ public class MimeUtility {
 		// it's not a continuation line, just leave it in
 		if (sb == null)
 		    sb = new StringBuffer(s.length());
-		sb.append(s.substring(0, i));
+		sb.append(s, 0, i);
 		s = s.substring(i);
 	    } else {
 		// there's a backslash at "start - 1"
 		// strip it out, but leave in the line break
 		if (sb == null)
 		    sb = new StringBuffer(s.length());
-		sb.append(s.substring(0, start - 1));
-		sb.append(s.substring(start, i));
+		sb.append(s, 0, start - 1);
+		sb.append(s, start, i);
 		s = s.substring(i);
 	    }
 	}

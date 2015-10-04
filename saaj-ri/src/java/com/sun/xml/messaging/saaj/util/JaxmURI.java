@@ -1245,7 +1245,7 @@ import java.io.Serializable;
     // see RFC 2396 Section 3.2.2
     int index = address.lastIndexOf('.');
     if (address.endsWith(".")) {
-      index = address.substring(0, index).lastIndexOf('.');
+      index = address.lastIndexOf('.', index - 1);
     }
 
     if (index+1 < addrLength && isDigit(p_address.charAt(index+1))) {
